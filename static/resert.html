@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>备份还原</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .fc-day > div {
+            min-height: 88px !important;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInDown">
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>备份还原</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <form class="form-horizontal m-t" id="dorform" novalidate="novalidate">
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button class="btn btn-primary col-sm-8" id="back-up" type="button">备份</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>清楚过期记录</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <form class="form-horizontal m-t" novalidate="novalidate">
+                        <div class="form-group">
+                            <div class="col-sm-8 col-sm-offset-3">
+                                <button class="btn btn-primary col-sm-8" id="cleaning" type="button">清除</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>备份记录表
+                        <small>（选择对应的日期进行还原）</small>
+                    </h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <table class="table table-striped table-bordered table-hover dataTables-example">
+                        <thead>
+                        <tr>
+                            <th>备份时间</th>
+                            <th>还原</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablebody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <p class="m-t">
+                        <h3>注意：</h3>在系统备份跟还原是把资源文件备份到安装目录下的目录backup下，请不要误删文件，导致还原失败导致数据丢失！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/index.js"></script>
+<!--<script src="js/sql.js"></script>-->
+<!--<script src="opmodual.js"></script>-->
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        },
+        errorElement: "span",
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    })
+    function formdata(obj){
+        var datatime = new Date(obj);
+        return '这是于【'+datatime.getFullYear()+' 年 '+(datatime.getMonth()+1)+' 月 '+datatime.getDate()+' 日 '+datatime.getHours()+' 时 '+datatime.getMinutes()+' 分 '+datatime.getSeconds()+' 秒】备份的数据';
+    }
+    function addtable(json,obj) {
+        var i = 0;
+        var html = '';
+        for( var key in json){
+            html ='<tr>\
+                <td>'+ formdata(json[key].time)+'</td>\
+                <td>\
+                <div>\
+                <a href="javascript:void(0);" class="btn btn-primary back" data-id ="'+json[key].filename+'" time = "'+formdata(json[key].time)+'">还原</a>\
+                <a href="javascript:void(0);" class="btn btn-danger del" data-id ="'+json[key].filename+'" time = "'+formdata(json[key].time)+'">删除</a>\
+                </div>\
+                </td>\
+                </tr>';
+            obj.prepend(html);
+        }
+
+    }
+    $(document).ready(function () {
+        $("#back-up").click(function () {
+            layer.msg('备份中……', {
+                icon: 16,
+                shade: 0.5,
+                time:2000,
+                end:function () {
+                    layer.msg("已备份在根目录backup目录下",{
+                        icon:1,
+                        end:function () {
+                            parent.s.backup();
+                            location.reload();
+                        }
+                    })
+
+                }
+            });
+        });
+        $("#cleaning").click(function () {
+            layer.msg('清除中……', {
+                icon: 16,
+                shade: 0.5,
+                time:1500,
+                end:function () {
+                    layer.msg("清除完成，并自动备份",{
+                        icon:1,
+                        end:function () {
+                            msg = parent.s.delOverduePlan();
+                            location.reload();
+                            console.log('cleaning', msg);
+                        }
+                    })
+
+                }
+            });
+        });
+        var data = parent.s.getBackup();
+        addtable(data,$("#tablebody"));
+        $(".dataTables-example").dataTable({
+            sort: false,                    //关闭排序
+            filter: false,                  //关闭搜索框
+            lengthChange: false,            //关闭显示数量下拉框
+            pageLength:10
+        });
+        //还原数据
+        $(".dataTables-example").on('click','.back',function () {
+            var data_id = $(this).attr('data-id');
+            layer.confirm("请确定还原到"+$(this).attr('time')+"的备份，可能会导致现有未部分数据丢失！", {
+                icon: 3,
+                title:'请确认',
+                closeBtn: 0,
+                yes: function(index) {
+                    layer.msg("还原中……",{
+                        icon: 16,
+                        time:2000,
+                        anim:0,
+                        end:function () {
+                            layer.msg("已还原！",{
+                                icon:1,
+                                end:function () {
+                                    parent.s.restore(data_id);
+                                    parent.location.reload();
+                                }
+                            })
+
+                        }
+                    });
+                },
+                cancel:function(index) {
+                    layer.msg("已取消！");
+                }
+            })
+        });
+        //删除备份
+        $(".dataTables-example").on('click','.del',function () {
+            var data_id = $(this).attr('data-id');
+            layer.confirm("确定删除"+$(this).attr('time')+"的备份，删除后不可找回！", {
+                icon: 3,
+                title:'请确认',
+                closeBtn: 0,
+                yes: function(index) {
+                    layer.msg("删除中……",{
+                        icon: 16,
+                        time:2000,
+                        anim:0,
+                        end:function () {
+                            layer.msg("已删除！",{
+                                icon:1,
+                                end:function () {
+                                    parent.s.delBackup(data_id);
+                                    location.reload();
+                                }
+                            })
+
+                        }
+                    });
+                },
+                cancel:function(index) {
+                    layer.msg("已取消！");
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

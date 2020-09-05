@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日历</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <style>
+        .fc-day > div {
+            min-height: 88px!important;
+        }
+        a:hover,
+        a:focus {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInDown">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>住宿安排查询</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <div class="row">
+                        <form class="form-horizontal m-t col-sm-6" novalidate="novalidate">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">选择要安排的时间段：</label>
+                                <div class="col-sm-8">
+                                    <input style="cursor:pointer" id="time" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择你要查询的时间段">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <table class="table">
+                        <tbody>
+                        <tr>
+                            <div class="col-sm-6">
+                                <h2>目前所剩房间数</h2>
+                            </div>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button type="button" class="btn btn-danger m-r-sm" id="singly-last"></button>
+                                单间剩余数量
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-primary m-r-sm" id="double-last"></button>
+                                标间剩余数量
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="ibox-content">
+                                <div>
+                                    <div>
+                                        <span>单人间</span>
+                                        <small class="pull-right" id="singly"></small>
+                                    </div>
+                                    <div class="progress progress-small">
+                                        <div class="progress-bar progress-bar-danger" id="singly-bar"></div>
+                                    </div>
+
+                                    <div>
+                                        <span>标间</span>
+                                        <small class="pull-right" id="double"></small>
+                                    </div>
+                                    <div class="progress progress-small">
+                                        <div class="progress-bar" id="double-bar"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>教室使用查询</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <div class="row">
+                        <form class="form-horizontal m-t col-sm-6" novalidate="novalidate">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">选择要安排的时间：</label>
+                                <div class="col-sm-8">
+                                    <input style="cursor:pointer" id="class-time" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择你要查询的时间">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的教室(上午)</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="class-room"></tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的教室（下午）</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="class-room-xia"></tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的教室（晚上）</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="class-room-wan"></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>讨论室使用查询</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <div class="row">
+                        <form class="form-horizontal m-t col-sm-6" novalidate="novalidate">
+                            <div class="form-group">
+                                <label class="col-sm-4 control-label">选择要安排的时间：</label>
+                                <div class="col-sm-8">
+                                    <input style="cursor:pointer" id="talk-time" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择你要查询的时间">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的讨论室(上午)</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="talk-room"></tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的讨论室（下午）</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="talk-room-xia"></tr>
+                        </tbody>
+                    </table>
+                    <div class="col-sm-12">
+                        <h2 style="border-bottom: 1px #dddddd solid;padding-bottom: 10px;">可用的讨论室（晚上）</h2>
+                    </div>
+                    <table class="table">
+                        <tbody>
+                        <tr id="talk-room-wan"></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/index.js"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<!-- Full Calendar -->
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/laydate/laydate.js"></script>
+<script>
+    function topai(lenth){
+        return (Math.round(lenth * 10000)/100).toFixed(2) + '%';
+    }
+    function sethouseshow(data,nowhouse) {
+        var lenth;
+        var text = "总共"+data.singly+"间，已用"+(data.singly-nowhouse.singly)+"间，剩余"+nowhouse.singly+"间";
+        $("#singly").text(text);
+        $("#singly-last").text(nowhouse.singly);//设置目前剩余多少间宿舍
+        lenth = nowhouse.singly/data.singly;
+        lenth = lenth.toFixed(3);
+        $("#singly-bar").css("width",topai(lenth));//设置进度
+
+        var text = "总共"+data.double+"间，已用"+(data.double-nowhouse.double)+"间，剩余"+nowhouse.double+"间";
+        $("#double").text(text);
+        $("#double-last").text(nowhouse.double);//设置目前剩余多少间宿舍
+        lenth = nowhouse.double/data.double;
+        lenth = lenth.toFixed(3);
+        $("#double-bar").css("width",topai(lenth));//设置进度
+//        var html ='';
+//        for(var i = 0;i < nowhouse.room.length;i++){
+//            html += '<div class="col-sm-3">\
+//                <div class="widget style1 navy-bg">\
+//                <div class="row">\
+//                <div class="col-xs-12 text-right">\
+//                <span> 未使用 </span>\
+//                <h2 class="font-bold">'+nowhouse.room[i]+'</h2>\
+//            </div>\
+//            </div>\
+//            </div>\
+//            </div>';
+//        }
+//        $("#class-room").html(html);
+    }
+    function setclass(nowhouse) {
+        var html ='',html2="",html3="";
+        for(var i = 0;i < nowhouse[1].length;i++){
+            html += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">上午</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[1][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        for(var i = 0;i < nowhouse[2].length;i++){
+            html2 += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">下午</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[2][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        for(var i = 0;i < nowhouse[3].length;i++){
+            html3 += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">晚上</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[3][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        $("#class-room").html(html);
+        $("#class-room-xia").html(html2);
+        $("#class-room-wan").html(html3);
+    }
+    function settalk(nowhouse) {
+        var html ='',html2="",html3="";
+        console.log(nowhouse);
+        for(var i = 0;i < nowhouse[1].length;i++){
+            html += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">上午</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[1][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        for(var i = 0;i < nowhouse[2].length;i++){
+            html2 += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">下午</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[2][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        for(var i = 0;i < nowhouse[3].length;i++){
+            html3 += '<div class="col-sm-3">\
+                <div class="widget style1 navy-bg">\
+                <div class="row">\
+                <div class="col-xs-12 text-right">\
+                <span class="label label-danger">晚上</span>\
+                <span class="label label-primary"> 未使用 </span>\
+                <h2 class="font-bold">'+nowhouse[3][i]+'</h2>\
+            </div>\
+            </div>\
+            </div>\
+            </div>';
+        }
+        $("#talk-room").html(html);
+        $("#talk-room-xia").html(html2);
+        $("#talk-room-wan").html(html3);
+    }
+    $(document).ready(function () {
+
+        //初始化数据
+        setTimeout(function(){
+            var data = parent.s.getConifg();
+            var nowhouse = parent.s.getHousing();
+            sethouseshow(data,nowhouse);
+            var nowclass = parent.s.getClassroomByTime();
+            //console.log(nowclass.used.length);
+            setclass(nowclass.empty);
+            var nowmeet = parent.s.getMeetingByTime();
+            settalk(nowmeet.empty);
+        },1000);
+
+        //宿舍日期范围
+        laydate.render({
+            elem: '#time'
+            ,format: 'yyyy年MM月dd日'
+            ,range: true
+            ,done: function(value, date, endDate){
+                var start_time = FormatDate(date);
+                var end_time = FormatDate(endDate);
+                var msg = parent.s.getHousing(start_time,end_time);
+                var data = parent.s.getConifg();
+
+                layer.load(1,{
+                    shade:0.5,
+                    time:1000,
+                    end:function () {
+                        sethouseshow(data,msg);
+                        //var data = parent.s.getHousing();
+                        //sethouseshow(data,msg);
+                    }
+                })
+            }
+        });
+
+        //教室日期范围
+        laydate.render({
+            elem: '#class-time'
+            ,format: 'yyyy年MM月dd日'
+            ,done: function(value, date, endDate){
+                var start_time = FormatDate(date);
+                layer.load(1,{
+                    shade:0.5,
+                    time:1000,
+                    end:function () {
+                        var data = parent.s.getClassroomByTime(start_time);
+                        //console.log(data);
+                        setclass(data.empty);
+                    }
+                })
+            }
+        });
+
+        //讨论室日期范围
+        laydate.render({
+            elem: '#talk-time'
+            ,format: 'yyyy年MM月dd日'
+            ,done: function(value, date, endDate){
+                var start_time = FormatDate(date);
+                layer.load(1,{
+                    shade:0.5,
+                    time:1000,
+                    end:function () {
+                        var data = parent.s.getMeetingByTime(start_time);
+                        settalk(data.empty);
+                    }
+                })
+            }
+        });
+
+    });
+</script>
+
+</body>
+
+</html>

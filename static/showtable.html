@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入住安排</title>
+    <link rel="shortcut icon" href="favicon.png">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .fc-day > div {
+            min-height: 88px !important;
+        }
+        .title{
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            font-size: 40px;
+            font-weight: 400;
+        }
+        .show{
+            position: absolute;
+            width: 100%;
+            height: 80%;
+            overflow: hidden;
+        }
+        .gray-bg{
+         background-color: #009cff;
+            color: white;
+
+        }
+        /*间隔行样式*/
+        .table-striped>tbody>tr:nth-of-type(odd) {
+            background-color: #005bab;
+        }
+        /*表头*/
+        .table-bordered > thead > tr > th, .table-bordered > thead > tr > td {
+            background-color: #3d5363;
+            font-size: 26px;
+        }
+        .table-bordered > tbody {
+            font-size: 24px;
+        }
+        /*悬浮样式*/
+        .table-hover>tbody>tr:hover {
+            background-color: #00509c;
+        }
+        .red{
+            color: #ffff00;
+        }
+        #tablebody {
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content" style="height: 100%">
+    <div class="row animated fadeInDown" style="height: 100%">
+        <div class="col-sm-12" style="height: 100%">
+            <h1 class="title">最新登记情况列表展示</h1>
+            <table class="table table-striped table-bordered table-hover dataTables-example" style="table-layout:fixed;">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>单位名称</th>
+                    <th style="width: 300px;">入住时间段</th>
+                    <th>总人数</th>
+                    <th>单间</th>
+                    <th>标间</th>
+                    <!--<th>教室</th>-->
+                </tr>
+                </thead>
+                 <tbody id="tablebody">
+
+                 </tbody>
+                <tbody id="sco">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/index.js"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/laydate/laydate.js"></script>
+<script src="js/sql.js"></script>
+<script src="opmodual.js"></script>
+<script>
+    var gui = require('nw.gui');
+    var	win	= gui.Window.get();
+    //win.setAlwaysOnTop();
+    function scrolltable(height,html,obj,time,long){
+        var i = 0;
+        //console.log(obj)
+        //obj.children("table").html(html+html);
+        //$("#sco").html(html);
+        if(height < $(".dataTables_scrollBody").height()){
+            clearInterval(clicktime);
+        }else{
+            var clicktime = setInterval(
+                function () {
+//                    var html = obj.children("table").find("tr").eq(1).html();
+//                    obj.children("table").append("<tr>"+html+"</tr>");
+//                    obj.children("table").find("tr").eq(1).remove();
+                    if(i >= height - document.documentElement.clientWidth*0.4-20){
+                        obj.children("table").scrollTop(height*0.5)
+                        //obj.children("table").append(html);
+                    }
+                    if(i >= height - document.documentElement.clientWidth*0.4){
+                        //obj.children("table").append(html);
+                        obj.animate({ scrollTop: i },1000);
+                        i = 0;
+                    }else {
+                        obj.animate({ scrollTop: i },1000);
+                        i = i + long;
+                    }
+                },time*1000);
+
+            obj.hover(function () {
+                clearInterval(clicktime);
+            });
+            obj.mouseleave(function () {
+                setTimeout(function () {
+                    scrolltable(height,html,obj,time,long);
+                },1000)
+            });
+        }
+
+    }
+
+    function rtable(obj) {
+        setInterval(
+            function () {
+                console.log(obj)
+                console.log(obj.children("table").find("tr").length);
+                var html = obj.children("table").find("tr").eq(1).html();
+                console.log(html)
+                obj.children("table").append("<tr>"+html+"</tr>");
+                obj.children("table").find("tr").eq(1).remove();
+            },1000
+        )
+    }
+
+    function addtable(json,obj) {
+        var i = 0;
+        var html;
+        for (var i in json){
+            html+='<tr>\
+            <td>'+ json[i].start_time+'</td>\
+                <td>'+ json[i].unit+'</td>\
+                <td>'+ Datetoshow(json[i].start_time)+' --- '+ Datetoshow(json[i].end_time)+'\
+            </td>\
+            <td>'+ json[i].total+'人</td>\
+            <td>'+ json[i].singly+'间</td>\
+           <td>'+ json[i].double+'间</td>\
+                </tr>'
+        }
+        obj.html(html);
+    }
+    $().ready(function () {
+        var nowhouse = s.getInfoPlan();
+        sortArray = [];
+        for (var key in nowhouse) {
+            sortArray.push(nowhouse[key]);
+        }
+        sortArray.sort(function (a, b) {
+            var value1 = Date.parse(a["start_time"]);
+            var value2 = Date.parse(b["start_time"]);
+            return (value1 > value2)
+                ? 1
+                : -1;
+        });
+        console.log('sortArray', sortArray);
+        addtable(sortArray,$("#tablebody"));
+
+        var h = document.documentElement.clientWidth*0.4;
+
+        $(".dataTables-example").dataTable({
+            sort: false,                    //关闭排序
+            filter: false,                  //关闭搜索框
+            lengthChange: false,            //关闭显示数量下拉框
+            scrollY: h,
+            scrollCollapse: true,
+            paging: false,
+            "columnDefs": [
+                {  "visible": false, "targets": 0 },
+                { "width": "20%", "targets": 1 },
+                { "width": "30%", "targets": 2 },
+                { "className": "red", "targets": 3 }
+            ],
+            order:[ 0, "asc" ]
+        });
+        //日期范围
+        laydate.render({
+            elem: '#time'
+            ,format: 'yyyy年MM月dd日'
+            ,range: true
+            ,done: function(value, date, endDate){
+                console.log(value); //得到日期生成的值，如：2017-08-18
+                console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+                console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+            }
+        });
+
+       // $(".dataTables_scrollBody").children("table").css("position","a","top","300px");
+        var html = $(".dataTables_scrollBody").html();
+        var height = $(".dataTables_scrollBody").children("table").height();
+        scrolltable(height,html,$(".dataTables_scrollBody"),2,50);
+        //rtable($(".dataTables_scrollBody"));
+        $("#change").click(function () {
+            //win.leaveFullscreen();
+            win.toggleFullscreen();
+        });
+        $(".gohome").click(function () {
+            win.leaveFullscreen();
+        });
+
+    });
+    $(function () {
+        var timer;
+        var hidding = false;
+        $(document).mousemove(function () {
+            if(hidding){
+                hidding = false;
+                $(".gohome").fadeIn("slow");
+                return;
+            }
+            if (timer) {
+                clearTimeout(timer);
+                timer = 0;
+            }
+            $('html').css({
+                cursor: ''
+            });
+            timer = setTimeout(function () {
+                hidding = true;
+                $(".gohome").fadeOut("slow");
+                $('html').css({
+                    cursor: 'none'
+                });
+            }, 2000)
+        });
+    });
+</script>
+</body>
+</html>

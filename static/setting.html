@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .fc-day > div {
+            min-height: 88px !important;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInDown">
+        <div class="col-sm-12 col-md-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>宿舍配置</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <form class="form-horizontal m-t" id="dorform" novalidate="novalidate">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">单人间数量：</label>
+                            <div class="col-sm-8">
+                                <input id="one" name="singly" type="number" class="form-control" required="" aria-required="true" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">标间数量：</label>
+                            <div class="col-sm-8">
+                                <input id="two" type="number" class="form-control" name="double" required="" aria-required="true" min="0">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" id="save-dor" type="button">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>教室与讨论室配置（每个教室或讨论室用<span style="color: red">英文逗号[,]</span>隔开）</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <form class="form-horizontal m-t" id="teacherform" novalidate="novalidate">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">教室设置</label>
+                            <div class="col-sm-8">
+                                <textarea id="class-set" name="class-set" class="form-control" required="" aria-required="true" rows="5" style="max-width:100%;min-width: 100%;min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">讨论室设置</label>
+                            <div class="col-sm-8">
+                                <textarea id="talk-set" name="talk-set" class="form-control" required="" aria-required="true" rows="5" style="max-width:100%;min-width: 100%;min-height: 100px"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" id="save-teacher" type="button">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <p class="m-t">
+                    <h3>注意：</h3>在系统上设置房间的数量只需要在上面输入相应的数量，为正整数。输入后保存成功后为了系统逻辑不被打乱，建议不要经常更改！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/index.js"></script>
+<!--<script src="js/sql.js"></script>-->
+<!--<script src="opmodual.js"></script>-->
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        },
+        errorElement: "span",
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    })
+
+    $(document).ready(function () {
+        var data = parent.s.getConifg();
+        var str_room = data.classroom.join(",");
+        var str_meeting = data.meeting.join(",");
+
+        console.log(data);
+        $("#class-set").val(str_room);
+        $("#talk-set").val(str_meeting);
+        $("#two").val(data.double);
+        $("#one").val(data.singly);
+        $("#commentForm").validate();
+
+//宿舍参数设置
+        $("#save-dor").click(function () {
+            if ($("#dorform").validate().form()){
+                var val = $("#dorform").serializeObject();
+                if(parent.s.setConfig(val)){
+                    layer.alert('恭喜，设置完成,立即更新系统！', {
+                        icon: 1,
+                        title:'提示',
+                        closeBtn: 0,
+                        yes: function(index) {
+                            layer.close(index);
+                            parent.location.reload();
+                        }
+                    });
+                }else{
+                    layer.alert('不好意思，设置失败了,请重试！', {
+                        icon: 2,
+                        title:'提示',
+                        closeBtn: 0,
+                        yes: function(index) {
+
+                        }
+                    });
+                }
+            }else {
+
+            }
+        });
+        //教室参数设置
+        $("#save-teacher").click(function () {
+            if ($("#teacherform").validate().form()){
+                //var val =  $("#teacherform").serializeObject();
+            var result = parent.s.setConfig({
+                meeting:$("#talk-set").val(),
+                classroom:$("#class-set").val()
+            })
+                if(result){
+                    layer.alert('恭喜，设置完成,立即更新系统！', {
+                        icon: 1,
+                        title:'提示',
+                        closeBtn: 0,
+                        yes: function(index) {
+                            layer.close(index);
+                            parent.location.reload();
+                        }
+                    });
+                }else{
+                    layer.alert('不好意思，设置失败了,请重试！', {
+                        icon: 2,
+                        title:'提示',
+                        closeBtn: 0,
+                        yes: function(index) {
+
+                        }
+                    });
+                }
+                //console.log(val);
+                //alert(val);
+            }
+
+        });
+    });
+</script>
+</body>
+</html>

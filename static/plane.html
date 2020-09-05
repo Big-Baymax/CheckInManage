@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>入住安排</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link href="css/plugins/iCheck/custom.css" rel="stylesheet">
+    <link href="css/plugins/fullcalendar/fullcalendar.css" rel="stylesheet">
+    <link href="css/plugins/fullcalendar/fullcalendar.print.css" rel="stylesheet">
+    <link href="css/animate.css" rel="stylesheet">
+    <link href="css/style.css?v=4.1.0" rel="stylesheet">
+    <style>
+        .fc-day > div {
+            min-height: 88px !important;
+        }
+    </style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+    <div class="row animated fadeInDown">
+        <div class="col-sm-12">
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">当前</span>
+                        <h5>40人教室</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">
+                        </div>
+                        <small>所剩教室数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">当前</span>
+                        <h5>100人教室</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">
+                        </div>
+                        <small>所剩教室数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">当前</span>
+                        <h5>200人教室</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">
+                        </div>
+                        <small>所剩教室数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">当前</span>
+                        <h5>礼堂</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">
+                        </div>
+                        <small>所剩教室数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <span class="label label-info pull-right">当前</span>
+                        <h5>单人间</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <h1 class="no-margins">275,800</h1>
+                        <div class="stat-percent font-bold text-info">
+                        </div>
+                        <small>所剩教室数</small>
+                    </div>
+                </div>
+            </div>
+            <div class="ibox float-e-margins">
+                <div class="ibox-title">
+                    <h5>教室使用安排</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content" style="display: block;">
+                    <form class="form-horizontal m-t" id="check-in-form" novalidate="novalidate">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">单位名称：</label>
+                            <div class="col-sm-8">
+                                <input id="name" name="name" type="text" class="form-control" required="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">40人间教室数量：</label>
+                            <div class="col-sm-8">
+                                <input id="person-number" name="name" type="number" class="form-control" required="" aria-required="true" min="0" max="1000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">100人间教室数量：</label>
+                            <div class="col-sm-8">
+                                <input id="person-number" name="name" type="number" class="form-control" required="" aria-required="true" min="0" max="1000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">200人间教室数量：</label>
+                            <div class="col-sm-8">
+                                <input id="person-number" name="name" type="number" class="form-control" required="" aria-required="true" min="0" max="1000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">礼堂教室数量：</label>
+                            <div class="col-sm-8">
+                                <input id="person-number" name="name" type="number" class="form-control" required="" aria-required="true" min="0" max="1000">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">入住时间段：</label>
+                            <div class="col-sm-8">
+                                <input id="time" name="time" type="datetime" class="form-control" required="" aria-required="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-4 col-sm-offset-3">
+                                <button class="btn btn-primary" type="button" id="add-tea">登记</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <p class="m-t">
+                    <h3>注意：</h3>在系统上设置房间的数量只需要在上面输入相应的数量，为正整数。输入后保存成功后为了系统逻辑不被打乱，建议不要经常更改！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/jquery-ui.custom.min.js"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/laydate/laydate.js"></script>
+<script src="js/sql.js"></script>
+<script src="opmodual.js"></script>
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        },
+        errorElement: "span",
+        errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    })
+
+    $().ready(function () {
+        //日期范围
+        laydate.render({
+            elem: '#time'
+            ,format: 'yyyy年MM月dd日'
+            ,range: true
+            ,done: function(value, date, endDate){
+                console.log(value); //得到日期生成的值，如：2017-08-18
+                console.log(date); //得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
+                console.log(endDate); //得结束的日期时间对象，开启范围选择（range: true）才会返回。对象成员同上。
+            }
+        });
+        $("#dorform").validate();
+        $("#commentForm").validate();
+    });
+
+    $("#add-tea").click(function () {
+        layer.confirm(
+            '已经安排了49间单间，18间标间',
+            {
+                icon: 3,
+                title:'请确认',
+                closeBtn: 0,
+                yes: function(index) {
+                    layer.msg("已安排！");
+                },
+                cancel:function(index) {
+                    layer.msg("已取消，请重新安排！");
+                }
+            })
+    });
+
+</script>
+</body>
+
+</html>

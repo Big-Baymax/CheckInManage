@@ -1,0 +1,33 @@
+{
+  "name": "入住管理登记系统",
+  "main": "static/index.html",
+  "version": "1.0.0",
+  "description": "入住管理登记系统",
+  "author": "",
+  "license": "ISC",
+  "window": {
+    "title": "入住管理登记系统",
+    "icon": "static/favicon.png",
+    "toolbar": true,
+    "frame": true,
+    "width": 1366,
+    "height": 768,
+    "position": "center",
+    "min_width": 1250,
+    "min_height": 600,
+    "resizable": true,
+    "show": false,
+    "show_in_taskbar": true
+  },
+  "dependencies": {
+    "excel-export": "^0.5.1",
+    "sqlite3": "^3.1.9"
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

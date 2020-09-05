@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>入住安排</title>
+	<link rel="shortcut icon" href="favicon.png">
+	<link href="css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+	<link href="css/font-awesome.css?v=4.4.0" rel="stylesheet">
+	<link href="css/style.css?v=4.1.0" rel="stylesheet">
+	<link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+	<link href="css/animate.css" rel="stylesheet">
+	<style>
+		.fc-day > div {
+			min-height: 88px !important;
+		}
+		.hide{
+			display: none;
+		}
+
+	</style>
+</head>
+
+<body class="gray-bg">
+<div class="wrapper wrapper-content">
+	<div class="row animated fadeInDown">
+		<div class="col-sm-12">
+			<div class="col-sm-4">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<span class="label label-info pull-right">当前</span>
+						<h5>单人间</h5>
+					</div>
+					<div class="ibox-content">
+						<h1 class="no-margins" id="singly-last"></h1>
+						<div class="stat-percent font-bold text-info">
+						</div>
+						<small>可用房间数</small>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-4">
+				<div class="ibox float-e-margins">
+					<div class="ibox-title">
+						<span class="label label-info pull-right">当前</span>
+						<h5>标间</h5>
+					</div>
+					<div class="ibox-content">
+						<h1 class="no-margins" id="double-last"></h1>
+						<div class="stat-percent font-bold text-info">
+						</div>
+						<small>可用房间数</small>
+					</div>
+				</div>
+			</div>
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>宿舍入住登记</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+						<a class="close-link">
+							<i class="fa fa-times"></i>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content" style="display: block;">
+					<form class="form-horizontal m-t" id="dorform" novalidate="novalidate">
+						<div class="form-group">
+							<label class="col-sm-3 control-label">单位名称：</label>
+							<div class="col-sm-8">
+								<input id="unit" name="unit" type="text" class="form-control" required="" aria-required="true" placeholder="前输入单位名称">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">人数：</label>
+							<div class="col-sm-8">
+								<input id="total" name="total" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0" placeholder="请输入人数">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">入住时间段：</label>
+							<div class="col-sm-8">
+								<input style="cursor:pointer" id="time" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择入住的时间段">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">单间数量：</label>
+							<div class="col-sm-8">
+								<input id="singly" name="singly" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0">
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="col-sm-3 control-label">标间数量：</label>
+							<div class="col-sm-8">
+								<input id="double" name="double" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0">
+							</div>
+						</div>
+						<!--<div class="form-group">-->
+							<!--<label class="col-sm-3 control-label">选择教室：</label>-->
+							<!--<div class="col-sm-8">-->
+								<!--<select class="form-control m-b" name="account" id="classroom" style="cursor:pointer">-->
+									<!--<option value="">&#45;&#45;请选择(不选择请选这个)&#45;&#45;</option>-->
+									<!--<option>报告厅</option>-->
+									<!--<option>多功能厅</option>-->
+									<!--<option>第一教室</option>-->
+									<!--<option>第二教室</option>-->
+									<!--<option>第四教室</option>-->
+									<!--<option>第五教室</option>-->
+									<!--<option>第六教室</option>-->
+									<!--<option>第七教室</option>-->
+								<!--</select>-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<div class="form-group">-->
+							<!--<label class="col-sm-3 control-label">选择讨论室：</label>-->
+							<!--<div class="col-sm-8">-->
+								<!--<select id="talk-room" class="form-control" multiple="" size="10" style="cursor:pointer" title="按住Ctrl可以多选，也可以取消选择">-->
+									<!--<option value="" selected = "selected">&#45;&#45;不选择任何讨论室（按住Ctrl可以多选，也可以取消选择）&#45;&#45;</option>-->
+									<!--<option value="第4讨论室">第4讨论室</option>-->
+									<!--<option value="第5讨论室">第5讨论室</option>-->
+									<!--<option value="第6讨论室">第6讨论室</option>-->
+									<!--<option value="第7讨论室">第7讨论室</option>-->
+									<!--<option value="第8讨论室">第8讨论室</option>-->
+									<!--<option value="第9讨论室">第9讨论室</option>-->
+									<!--<option value="第10讨论室">第10讨论室</option>-->
+									<!--<option value="第11讨论室">第11讨论室</option>-->
+									<!--<option value="第12讨论室">第12讨论室</option>-->
+									<!--<option value="第13讨论室">第13讨论室</option>-->
+									<!--<option value="第14讨论室">第14讨论室</option>-->
+									<!--<option value="第15讨论室">第15讨论室</option>-->
+									<!--<option value="第16讨论室">第16讨论室</option>-->
+								<!--</select>-->
+							<!--</div>-->
+						<!--</div>-->
+						<!--<div class="form-group">-->
+							<!--<label class="col-sm-3 control-label">讨论室使用时间：</label>-->
+							<!--<div class="col-sm-6">-->
+								<!--<input style="cursor:pointer" id="talk-time" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择讨论室使用的时间">-->
+							<!--</div>-->
+							<!--<div class="col-sm-2">-->
+								<!--<select class="form-control" id="time_flag" style="cursor:pointer">-->
+									<!--<option value="1" selected>上午</option>-->
+									<!--<option value="2">下午</option>-->
+									<!--<option value="3">晚上</option>-->
+								<!--</select>-->
+							<!--</div>-->
+						<!--</div>-->
+						<div class="form-group">
+							<div class="col-sm-4 col-sm-offset-3">
+								<button class="btn btn-primary" id="add-dor" type="button">登记</button>
+								<button class="btn btn-warning" id="reset" type="reset">重置</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-12">
+			<div class="ibox float-e-margins">
+				<div class="ibox-title">
+					<h5>入住登记记录表
+						<small>（可以删除掉错误的记录，重新添加）</small>
+					</h5>
+					<div class="ibox-tools">
+						<a class="collapse-link">
+							<i class="fa fa-chevron-up"></i>
+						</a>
+						<a class="close-link">
+							<i class="fa fa-times"></i>
+						</a>
+					</div>
+				</div>
+				<div class="ibox-content" style="display: block;">
+					<div class="">
+						<a id="output" href="javascript:void(0);" class="btn btn-success">导出Excel(现在至以后)</a>
+						<input	id="fileDialog" type="file" nwsaveas="宿舍登记列表导出（现在至以后）.xlsx" style="display: none" accept=".xlsx"/>
+
+						<a id="outputall" href="javascript:void(0);" class="btn btn-warning" style="margin-left: 15px">导出Excel（所有的）</a>
+						<input	id="fileDialogall" type="file" nwsaveas="宿舍登记列表导出(所有的).xlsx" style="display: none" accept=".xlsx"/>
+					</div>
+						<table class="table table-striped table-bordered table-hover dataTables-example">
+							<thead>
+							<tr>
+								<th>#</th>
+								<th>单位名称</th>
+								<th>入住时间段</th>
+								<th>总人数</th>
+								<th>单间</th>
+								<th>标间</th>
+								<th>操做</th>
+							</tr>
+							</thead>
+							<tbody id="tablebody">
+							</tbody>
+						</table>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="myModal" class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="gridSystemModalLabel">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title" id="gridSystemModalLabel">修改登记信息</h4>
+			</div>
+			<div class="modal-body">
+				<form class="form-horizontal m-t" id="dorform-model" novalidate="novalidate">
+					<div class="form-group">
+						<label class="col-sm-3 control-label">单位名称：</label>
+						<div class="col-sm-8">
+							<input id="unit-model" name="unit" type="text" class="form-control" required="" aria-required="true" placeholder="前输入单位名称">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">人数：</label>
+						<div class="col-sm-8">
+							<input id="total-model" name="total" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0" placeholder="请输入人数">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">入住时间段：</label>
+						<div class="col-sm-8">
+							<input style="cursor:pointer" id="time-model" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择入住的时间段">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">单间数量：</label>
+						<div class="col-sm-8">
+							<input id="singly-model" name="singly" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0">
+						</div>
+					</div>
+					<div class="form-group">
+						<label class="col-sm-3 control-label">标间数量：</label>
+						<div class="col-sm-8">
+							<input id="double-model" name="double" type="number" class="form-control" required="" aria-required="true" min="0" max="1000" value="0">
+						</div>
+					</div>
+					<!--<div class="form-group">-->
+						<!--<label class="col-sm-3 control-label">选择教室：</label>-->
+						<!--<div class="col-sm-8">-->
+							<!--<select class="form-control m-b" name="account" id="classroom-model" style="cursor:pointer">-->
+								<!--<option value="">&#45;&#45;请选择(不选择请选这个)&#45;&#45;</option>-->
+								<!--<option>多功能厅</option>-->
+								<!--<option>第一教室</option>-->
+								<!--<option>第二教室</option>-->
+								<!--<option>第四教室</option>-->
+								<!--<option>第五教室</option>-->
+								<!--<option>第六教室</option>-->
+								<!--<option>第七教室</option>-->
+							<!--</select>-->
+						<!--</div>-->
+					<!--</div>-->
+					<!--<div class="form-group">-->
+						<!--<label class="col-sm-3 control-label">选择讨论室：</label>-->
+						<!--<div class="col-sm-8">-->
+							<!--<select id="talk-room-model" class="form-control" multiple="" size="10" style="cursor:pointer" title="按住Ctrl可以多选，也可以取消选择">-->
+								<!--<option value="" selected = "selected">&#45;&#45;不选择任何讨论室（按住Ctrl可以多选，也可以取消选择）&#45;&#45;</option>-->
+								<!--<option value="第4讨论室">第4讨论室</option>-->
+								<!--<option value="第5讨论室">第5讨论室</option>-->
+								<!--<option value="第6讨论室">第6讨论室</option>-->
+								<!--<option value="第7讨论室">第7讨论室</option>-->
+								<!--<option value="第8讨论室">第8讨论室</option>-->
+								<!--<option value="第9讨论室">第9讨论室</option>-->
+								<!--<option value="第10讨论室">第10讨论室</option>-->
+								<!--<option value="第11讨论室">第11讨论室</option>-->
+								<!--<option value="第12讨论室">第12讨论室</option>-->
+								<!--<option value="第13讨论室">第13讨论室</option>-->
+								<!--<option value="第14讨论室">第14讨论室</option>-->
+								<!--<option value="第15讨论室">第15讨论室</option>-->
+								<!--<option value="第16讨论室">第16讨论室</option>-->
+							<!--</select>-->
+						<!--</div>-->
+					<!--</div>-->
+					<!--<div class="form-group">-->
+						<!--<label class="col-sm-3 control-label">讨论室使用时间：</label>-->
+						<!--<div class="col-sm-6">-->
+							<!--<input style="cursor:pointer" id="talk-time-model" name="time" type="datetime" class="form-control" required="" aria-required="true" placeholder="请选择讨论室使用的时间">-->
+						<!--</div>-->
+						<!--<div class="col-sm-2">-->
+							<!--<select class="form-control" id="time_flag-model" style="cursor:pointer">-->
+								<!--<option value="1" selected>上午</option>-->
+								<!--<option value="2">下午</option>-->
+								<!--<option value="3">晚上</option>-->
+							<!--</select>-->
+						<!--</div>-->
+					<!--</div>-->
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+				<button type="button" class="btn btn-primary" id="add-dor-model" >保存</button>
+			</div>
+		</div><!-- /.modal-content -->
+</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+<!-- 全局js -->
+<script src="js/jquery.min.js?v=2.1.4"></script>
+<script src="js/bootstrap.min.js?v=3.3.6"></script>
+<script src="js/index.js"></script>
+
+<!-- 自定义js -->
+<script src="js/content.js?v=1.0.0"></script>
+<script src="js/plugins/validate/jquery.validate.min.js"></script>
+<script src="js/plugins/validate/messages_zh.min.js"></script>
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+<script src="js/plugins/dataTables/dataTables.bootstrap.js"></script>
+<script src="js/plugins/layer/layer.min.js"></script>
+<script src="js/plugins/laydate/laydate.js"></script>
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error")
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success")
+        },
+        errorElement: "span",
+        errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent())
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none",
+    })
+    var start_time = '0000-00-00',end_time = '0000-00-00', talk_time = '0000-00-00';
+    function addtable(json,obj) {
+        var i = 0;
+        var html;
+		for(i=0;i < json.length;i++){
+        html+='<tr>\
+        <td>'+ json[i][5]+'</td>\
+                <td>'+ json[i][1]+'</td>\
+                <td>'+ Datetoshow(json[i][5])+' --- '+ Datetoshow(json[i][6])+'\
+            </td>\
+            <td>'+ json[i][2]+'人</td>\
+            <td>'+ json[i][3]+'间</td>\
+           <td>'+ json[i][4]+'间</td>\
+                <td>\
+                <div>\
+                <a href="javascript:void(0);" class="btn btn-danger del" data-id ="'+json[i][0]+'">删除</a>\
+                <a href="javascript:void(0);" class="btn btn-primary edit" data-id ="'+json[i][0]+'" d="'+i+'" data-toggle="modal" data-target="#myModal">编辑</a>\
+                </div>\
+                </td>\
+                </tr>'
+		}
+		obj.html(html);
+    }
+    $().ready(function () {
+        var nowhouse = parent.s.getHousing();
+        //console.log(nowhouse);
+        var tabledate = parent.s.getAll("plan_housing");
+        //填充表格
+        if(tabledate.length){
+            addtable(tabledate[0].values,$("#tablebody"));
+		}
+
+        $("#reset").click(function () {
+            //重置表单
+            $("#dorform").validate().resetForm();
+            $("#dorform").children(".form-group").removeClass("has-error").removeClass("has-success");
+        });
+
+        $("#singly-last").text(nowhouse.singly);//设置目前剩余多少间宿舍
+        $("#double-last").text(nowhouse.double);//设置目前剩余多少间宿舍
+
+        var table = $(".dataTables-example").dataTable({
+            //sort: false,                    //关闭排序
+            filter: false,                  //关闭搜索框
+            lengthChange: false,            //关闭显示数量下拉框
+            "columnDefs": [
+                {  "className": 'hide', "targets": 0 }
+            ],
+            pageLength:10,
+            order:[ 0, "asc" ]
+        });
+        //table.order( [[ 1, 'asc' ], [ 2, 'asc' ]] ).draw();
+        //日期范围
+        laydate.render({
+            elem: '#time'
+            ,format: 'yyyy年MM月dd日'
+            ,range: true
+            ,done: function(value, date, endDate){
+                start_time = FormatDate(date);
+                end_time = FormatDate(endDate);
+            }
+        });
+
+        laydate.render({
+            elem: '#talk-time'
+            ,format: 'yyyy年MM月dd日'
+            ,done: function(value, date, endDate){
+                talk_time = FormatDate(date);
+            }
+        });
+        //登记按钮
+        $("#add-dor").click(function () {
+            if($("#total").val()==''){
+                $("#total").val('0');
+            };
+            if($("#singly").val()==''){
+                $("#singly").val('0');
+            };
+            if($("#double").val()==''){
+                $("#double").val('0');
+            };
+            if ($("#dorform").validate().form()){
+                var add = parent.s.setPlan(
+                    $("#unit").val(),
+					$("#total").val(),
+					$("#singly").val(),
+					$("#double").val(),
+					start_time,
+					end_time
+				);
+                if(add.flag){
+                    var msg = "已经安排了"+$("#singly").val()+"间单间，"+ $("#double").val()+"间标间";
+                    layer.confirm(
+                        msg,
+                        {
+                            icon: 3,
+                            title:'请确认',
+                            closeBtn: 0,
+                            yes: function(index) {
+                                layer.msg("已安排!",{
+                                    icon:1,
+                                    time:2000,
+                                    anim:0,
+                                    end:function () {
+                                        $('iframe', window.parent.document).attr('src',function(n,v){
+                                            return $(this).attr('src');
+                                        });
+                                    }});
+                            },
+                            cancel:function(index) {
+                                layer.msg("已取消，请重新安排！");
+                            }
+                        })
+                }else {
+                    layer.msg("操做失败！"+add.msg,{
+                        icon:2,
+                        time:3000,
+                        anim:0,
+                    });
+                }
+            }
+        });
+
+        //修改提交
+        $("#add-dor-model").click(function () {
+            if($("#total").val()==''){
+                $("#total").val('0');
+            };
+            if($("#singly").val()==''){
+                $("#singly").val('0');
+            };
+            if($("#double").val()==''){
+                $("#double").val('0');
+            };
+            if ($("#dorform-model").validate().form()){
+                var data_id = $(this).attr('data-id');
+                var add = parent.s.updatePlan(
+                    $("#unit-model").val(),
+                    $("#total-model").val(),
+                    $("#singly-model").val(),
+                    $("#double-model").val(),
+                    start_time,
+                    end_time,
+                    data_id
+                );
+                if(add.flag){
+                    layer.msg("已修改!",{
+                        icon:1,
+                        time:2000,
+                        anim:0,
+                        end:function () {
+                            $('#myModal').modal('toggle');
+                            $('iframe', window.parent.document).attr('src',function(n,v){
+                                return $(this).attr('src');
+                            });
+                        }});
+                }else {
+                    layer.msg("操做失败！"+add.msg,{
+                        icon:2,
+                        time:3000,
+                        anim:0,
+                    });
+                }
+            }
+        });
+		//编辑
+        $(".float-e-margins").on('click','a.edit',function () {
+            var data = tabledate[0].values[$(this).attr('d')];
+            $("#add-dor-model").attr('data-id',data[0]);
+                $("#unit-model").val(data[1]);
+                $("#total-model").val(data[2]);
+                $("#singly-model").val(data[3]);
+                $("#double-model").val(data[4]);
+                 start_time = data[5];
+			     end_time = data[6];
+                 talk_time =data[9];
+                laydate.render({
+                elem: '#time-model'
+                ,format: 'yyyy年MM月dd日'
+                ,range: true
+                ,value:Datetoshow(data[5])+' - '+Datetoshow(data[6])
+                ,done: function(value, date, endDate){
+                    start_time = FormatDate(date);
+                    end_time = FormatDate(endDate);
+                }
+               });
+                var time = '';
+                if(data[9]!="0000-00-00"){
+                    time = new Date(data[9]);
+				}else {
+                    $("#talk-time-model").val("");
+				}
+            laydate.render({
+                elem: '#talk-time-model'
+                ,format: 'yyyy年MM月dd日'
+                ,value:time
+                ,done: function(value, date, endDate){
+                    talk_time = FormatDate(date);
+                    console.log(date);
+                }
+            });
+			$("#classroom-model").val(data[7]);
+			$("#talk-room-model").val(data[8].split("-"));
+			if(data[10]==""){
+
+			}else{
+				$("#time_flag-model").val(data[10]);
+			}
+			//重置表单
+            $("#dorform-model").validate().resetForm();
+            $("#dorform-model").children(".form-group").removeClass("has-error").removeClass("has-success");
+        });
+        //导出部分
+		$("#output").click(function () {
+			$('#fileDialog').click();
+        });
+        $('#fileDialog').change(function () {
+            var msg = parent.s.exportPlanToExcel($('#fileDialog').val());
+            $('#fileDialog').val("");
+            if(msg.flag){
+                layer.msg("已完成导出",{icon:1,time:5000});
+			}else {
+                layer.msg(""+msg.msg,{icon:2,time:5000});
+			}
+        });
+        //导出所有
+        $("#outputall").click(function () {
+            $('#fileDialogall').click();
+        });
+        $('#fileDialogall').change(function () {
+            var msg = parent.s.exportPlanToExcelOfAll($('#fileDialogall').val());
+            $('#fileDialogall').val("");
+            if(msg.flag){
+                layer.msg("已完成导出",{icon:1,time:5000});
+            }else {
+                layer.msg(""+msg.msg,{icon:2,time:5000});
+            }
+        });
+        //删除
+        $(".dataTables-example").on('click','.del',function () {
+            var msg = parent.s.delPlan($(this).attr("data-id"));
+            if(msg.flag){
+                layer.msg("删除成功",{icon:1,time:2000,end:function () {
+                    $('iframe', window.parent.document).attr('src',function(n,v){
+                        return $(this).attr('src');
+                    });
+                }})
+                $(this).parent().parent().parent().remove();
+			}else {
+                layer.msg(""+msg.msg,{icon:2})
+			}
+        });
+    });
+
+
+</script>
+</body>
+
+</html>
