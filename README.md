@@ -157,3 +157,7 @@ exportToExcelOfAll(filenameAndPath); // 导出excel表格  全部内容
 | start_time | TEXT    | 入住时间       |
 | end_time   | TEXT    | 入住时间       |
 | time_flag  | INTEGER | 上午/下午/晚上  |
+
+
+# 效果图
+![主页](./static/img/index.png '主页' )
